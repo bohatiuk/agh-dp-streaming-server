@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="dp-server-test:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>dp-server-test</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="dp-server-test-1.0-SNAPSHOT.war">
+      <element id="artifact" artifact-name="dp-server-test:war exploded" />
+    </root>
+  </artifact>
+</component>

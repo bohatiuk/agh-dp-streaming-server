@@ -5,12 +5,91 @@
          version="4.0">
 
     <servlet>
-        <servlet-name>Test</servlet-name>
-        <servlet-class>servlets.TestDBServlet</servlet-class>
+        <servlet-name>Login</servlet-name>
+        <servlet-class>servlets.LoginServlet</servlet-class>
     </servlet>
 
+
     <servlet-mapping>
-        <servlet-name>Test</servlet-name>
-        <url-pattern>/db</url-pattern>
+        <servlet-name>Login</servlet-name>
+        <url-pattern>/login</url-pattern>
     </servlet-mapping>
+
+    <servlet>
+        <servlet-name>UploadVideo</servlet-name>
+        <servlet-class>servlets.UploadVideoServlet</servlet-class>
+    </servlet>
+
+
+    <servlet-mapping>
+        <servlet-name>UploadVideo</servlet-name>
+        <url-pattern>/upload</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>DeleteVideo</servlet-name>
+        <servlet-class>servlets.DeleteVideoServlet</servlet-class>
+    </servlet>
+
+
+    <servlet-mapping>
+        <servlet-name>DeleteVideo</servlet-name>
+        <url-pattern>/delete</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>AllVideos</servlet-name>
+        <servlet-class>servlets.AllVideosServlet</servlet-class>
+    </servlet>
+
+
+    <servlet-mapping>
+        <servlet-name>AllVideos</servlet-name>
+        <url-pattern>/all-videos</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>UserVideos</servlet-name>
+        <servlet-class>servlets.UserVideosServlet</servlet-class>
+    </servlet>
+
+
+    <servlet-mapping>
+        <servlet-name>UserVideos</servlet-name>
+        <url-pattern>/user-videos</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>StoryVideos</servlet-name>
+        <servlet-class>servlets.StoryVideosServlet</servlet-class>
+    </servlet>
+
+
+    <servlet-mapping>
+        <servlet-name>StoryVideos</servlet-name>
+        <url-pattern>/story-videos</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>ChangeVisibility</servlet-name>
+        <servlet-class>servlets.ChangeVisibilityServlet</servlet-class>
+    </servlet>
+
+
+    <servlet-mapping>
+        <servlet-name>ChangeVisibility</servlet-name>
+        <url-pattern>/change-visibility</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>StreamVideo</servlet-name>
+        <servlet-class>servlets.StreamVideoServlet</servlet-class>
+    </servlet>
+
+
+    <servlet-mapping>
+        <servlet-name>StreamVideo</servlet-name>
+        <url-pattern>/stream</url-pattern>
+    </servlet-mapping>
+
 </web-app>

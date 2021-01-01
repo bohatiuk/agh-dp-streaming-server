@@ -67,9 +67,16 @@ public class VideoManager {
     private boolean _onUploadVideo(String username, String videoname) {
         // TODO:
         // 1. zgenerowac hash na pdostawie username i videoname
+        String hash = "..." + ".mp4";
         // 2. sprwadzic czy para username i hash juz istnieje
         // 3. jesli tak to false zwracac nalezy
         // 4. jesli nie istnieje to dodac pare username i hash do tabeli videos z bazy i zworcic true
+        // 5. [JULKA] przy pomocy funkcji VideoDecoder.compress skompresowac plik wejsciowy .mp4 (bedzie lezal w Config.uploadDir),
+        // plik stary usunac natomiast nadac temu skompresowanemu nazwe {HASH}.mp4
+        // 6. funkcja VideoDecoder.toHls skonwertowac do postaci HLS, juz to zrobilem
+
+        // ewentualnei trzeba bedzie usunac ten plik .mp4 skompresowany tez
+
 
         return false;
 

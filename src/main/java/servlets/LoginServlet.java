@@ -18,6 +18,11 @@ public class LoginServlet extends HttpServlet {
         String username = request.getParameter("username");
         String userpass = request.getParameter("userpass");
 
+        if (username == null || userpass == null) {
+            response.setStatus(400);
+            return;
+        }
+
 
         if (VideoManager.onLogin(username, userpass)) {
             HttpSession session = request.getSession();

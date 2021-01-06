@@ -1,5 +1,7 @@
+
 package core.db;
 
+import core.Config;
 import core.VideoListItem;
 
 
@@ -10,162 +12,241 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 
+public class VideoMapper extends AbstractDataMapper {
 
-public class VideoMapper extends AbstractDataMapper{
-
-    public VideoMapper(Connection con){
+    public VideoMapper(Connection con) {
         super.conn = con;
     }
 
-    public String token(String username,String videoname) throws SQLException {
-        String selectQuery = "SELECT video_token AS token from videoDB.Users WHERE user_name = " + username + " AND video_name = "+ videoname + ";" ;
-        Statement stmtSelect = conn.createStatement();
-        ResultSet resultSet = stmtSelect.executeQuery(selectQuery);
-        String token = (resultSet.getObject("token", java.util.UUID.class)).toString();
+    public String token(String username, String videoname) {
+        String selectQuery = "SELECT video_token AS token from " + Config.dbUserTable + " WHERE user_name = " + username + " AND video_name = " + videoname + ";";
+        Statement stmtSelect = null;
+        try {
+            stmtSelect = conn.createStatement();
 
-        return token;
+            ResultSet resultSet = stmtSelect.executeQuery(selectQuery);
+            String token = (resultSet.getObject("token", java.util.UUID.class)).toString();
+
+            return token;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return null;
     }
 
-    boolean insert(String username, String videoname, String initialVisiilty) throws SQLException {
-
-        String selectQuery = "SELECT user_id AS userID from videoDB.Users WHERE user_name = " + username + ";" ;
-        Statement stmtSelect = conn.createStatement();
-        ResultSet resultSet = stmtSelect.executeQuery(selectQuery);
-        int userID =resultSet.getInt("userID");
-        stmtSelect.close();
 
 
-        String selectCheckQuery = "SELECT COUNT (*) AS videoCount  FROM videoDB.Videos WHERE user_id = " + userID + " and video_name = "
-                + videoname+ ";";
-        Statement stmtSelectCheck = conn.createStatement();
-        ResultSet resultSetCheck = stmtSelectCheck.executeQuery(selectCheckQuery);
-        resultSetCheck.next();
-        int videoCount = resultSetCheck.getInt("videoCount");
-        stmtSelectCheck.close();
+    public boolean insert(String username, String videoname, String initialVisiilty) {
 
-        if (videoCount!=0){
-            return false;
+        String selectQuery = "SELECT user_id AS userID from " + Config.dbUserTable + " WHERE user_name = " + username + ";";
+        Statement stmtSelect = null;
+        try {
+            stmtSelect = conn.createStatement();
+
+            ResultSet resultSet = stmtSelect.executeQuery(selectQuery);
+            int userID = resultSet.getInt("userID");
+            stmtSelect.close();
+
+
+            String selectCheckQuery = "SELECT COUNT (*) AS videoCount  FROM " + Config.dbVideoTable + " WHERE user_id = " + userID + " and video_name = "
+                    + videoname + ";";
+            Statement stmtSelectCheck = conn.createStatement();
+            ResultSet resultSetCheck = stmtSelectCheck.executeQuery(selectCheckQuery);
+            resultSetCheck.next();
+            int videoCount = resultSetCheck.getInt("videoCount");
+            stmtSelectCheck.close();
+
+            if (videoCount > 0) {
+                return false;
+            }
+
+            String insertQuery = "INSERT INTO " + Config.dbVideoTable + "(user_id ,video_name, video_token, is_visible) VALUES (" +
+                    userID + ", " + videoname + "," + Config.hashMethod + "(" + videoname + ")," + initialVisiilty + ";";
+            Statement stmtInsert = conn.createStatement();
+            stmtInsert.executeUpdate(insertQuery);
+            stmtInsert.close();
+
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
-
-        String insertQuery = "INSERT INTO videoDB.Videos(user_id ,video_name, video_token, is_visible) VALUES ("+
-                userID + ", "+ videoname + "," + "md5("+videoname+")," + initialVisiilty +";";
-        Statement stmtInsert = conn.createStatement();
-        stmtInsert.executeUpdate(insertQuery);
-        stmtInsert.close();
 
         return true;
     }
 
-    boolean update(String username, String videoname, String type) throws SQLException {
+    public boolean update(String username, String videoname, String type) {
 
-        String selectQuery = "SELECT user_id AS userID from videoDB.Users WHERE user_name = " + username + ";" ;
-        Statement stmtSelect = conn.createStatement();
-        ResultSet resultSet = stmtSelect.executeQuery(selectQuery);
-        int userID = resultSet.getInt("userID");
-        stmtSelect.close();
+        String selectQuery = "SELECT user_id AS userID from " + Config.dbUserTable + " WHERE user_name = " + username + ";";
+        Statement stmtSelect = null;
+        try {
+            stmtSelect = conn.createStatement();
+
+            ResultSet resultSet = stmtSelect.executeQuery(selectQuery);
+            int userID = resultSet.getInt("userID");
+            stmtSelect.close();
 
 
-        String selectCheckQuery = "SELECT COUNT (*) AS videoCount  FROM videoDB.Videos WHERE user_id = " + userID + " AND video_name = "
-                + videoname + "AND is_visible = " + type  +";";
-        Statement stmtSelectCheck = conn.createStatement();
-        ResultSet resultSetCheck = stmtSelectCheck.executeQuery(selectCheckQuery);
-        resultSetCheck.next();
-        int videoCount = resultSetCheck.getInt("videoCount");
-        stmtSelectCheck.close();
+            String selectCheckQuery = "SELECT COUNT (*) AS videoCount  FROM " + Config.dbVideoTable + " WHERE user_id = " + userID + " AND video_name = "
+                    + videoname + "AND is_visible = " + type + ";";
+            Statement stmtSelectCheck = conn.createStatement();
+            ResultSet resultSetCheck = stmtSelectCheck.executeQuery(selectCheckQuery);
+            resultSetCheck.next();
+            int videoCount = resultSetCheck.getInt("videoCount");
+            stmtSelectCheck.close();
 
-        if (videoCount!=0){
-            return false;
+            if (videoCount != 0) {
+                return false;
+            }
+
+            String updateQuery = "UPDATE " + Config.dbVideoTable + " SET is_visible = " + type + "WHERE user_id = " + userID + " AND video_name = " +
+                    videoname + ";";
+            Statement stmtUpdate = conn.createStatement();
+            stmtUpdate.executeUpdate(updateQuery);
+            stmtUpdate.close();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
-
-        String updateQuery = "UPDATE videoDB.Videos SET is_visible = " + type + "WHERE user_id = " + userID + " AND video_name = " +
-                 videoname + ";";
-        Statement stmtUpdate = conn.createStatement();
-        stmtUpdate.executeUpdate(updateQuery);
-        stmtUpdate.close();
 
         return true;
 
     }
 
-    boolean delete(String username, String videoname) throws SQLException {
+    public boolean delete(String username, String videoname) {
 
-        String selectQuery = "SELECT user_id AS userID from videoDB.Users WHERE user_name = " + username + ";" ;
-        Statement stmtSelect = conn.createStatement();
-        ResultSet resultSet = stmtSelect.executeQuery(selectQuery);
-        int userID = resultSet.getInt("userID");
-        stmtSelect.close();;
+        String selectQuery = "SELECT user_id AS userID from " + Config.dbUserTable + " WHERE user_name = " + username + ";";
+        Statement stmtSelect = null;
+        try {
+            stmtSelect = conn.createStatement();
 
-        String selectCheckQuery = "SELECT COUNT (*) AS videoCount  FROM videoDB.Videos WHERE user_id = " + userID + " AND video_name = "
-                + videoname + ";";
-        Statement stmtSelectCheck = conn.createStatement();
-        ResultSet resultSetCheck = stmtSelectCheck.executeQuery(selectCheckQuery);
-        resultSetCheck.next();
-        int videoCount = resultSetCheck.getInt("videoCount");
-        stmtSelectCheck.close();
+            ResultSet resultSet = stmtSelect.executeQuery(selectQuery);
+            int userID = resultSet.getInt("userID");
+            stmtSelect.close();
+            ;
 
-        if (videoCount==0){
-            return false;
+            String selectCheckQuery = "SELECT COUNT (*) AS videoCount  FROM " + Config.dbVideoTable + " WHERE user_id = " + userID + " AND video_name = "
+                    + videoname + ";";
+            Statement stmtSelectCheck = conn.createStatement();
+            ResultSet resultSetCheck = stmtSelectCheck.executeQuery(selectCheckQuery);
+            resultSetCheck.next();
+            int videoCount = resultSetCheck.getInt("videoCount");
+            stmtSelectCheck.close();
+
+            if (videoCount > 0) {
+                return false;
+            }
+
+            String deleteQuery = "DELETE from " + Config.dbVideoTable + " where video_name =" + videoname + " and " +
+                    "user_id = " + userID + ";";
+            Statement stmtDelete = conn.createStatement();
+            stmtDelete.executeUpdate(deleteQuery);
+            stmtDelete.close();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
-
-        String deleteQuery = "DELETE from videoDB.Videos where video_name =" + videoname + "and " +
-                "user_id = "+ userID + ";" ;
-        Statement stmtDelete = conn.createStatement();
-        stmtDelete.executeUpdate(deleteQuery);
-        stmtDelete.close();
-
         return true;
     }
 
-    ArrayList<VideoListItem> allUserVideos(String username) throws SQLException {
+    public boolean checkAccessibility(String username, String videoname) {
+        String selectIDQuery = "SELECT user_id AS userID from " + Config.dbUserTable + " WHERE user_name = " + username + ";";
+        Statement stmtIDSelect = null;
+        try {
+            stmtIDSelect = conn.createStatement();
 
-        String selectIDQuery = "SELECT user_id AS userID from videoDB.Users WHERE user_name = " + username + ";" ;
-        Statement stmtIDSelect = conn.createStatement();
-        ResultSet resultSet = stmtIDSelect.executeQuery(selectIDQuery);
-        int userID = resultSet.getInt("userID");
-        stmtIDSelect.close();
+            ResultSet resultSet = stmtIDSelect.executeQuery(selectIDQuery);
+            int userID = resultSet.getInt("userID");
+            stmtIDSelect.close();
 
-        String selectQuery = "SELECT u.user_name AS userName, v.video_name AS videoName FROM videoDB.Users JOIN videoDB.Videos  ON (user_id) WHERE user_id = " + userID + ";";
-        Statement stmtSelect = conn.createStatement();
-        ResultSet resultSetCheck = stmtSelect.executeQuery(selectQuery);
+            String selectQuery = "SELECT COUNT (*) AS videoCount, u.user_name AS userName, v.video_name AS videoName FROM " + Config.dbUserTable + " JOIN " +
+                    Config.dbVideoTable + "  ON (user_id) WHERE" +
+                    "(is_visible = TRUE OR user_id = " + userID + ") AND video_name = " + videoname + ";";
+            Statement stmtSelect = conn.createStatement();
+            ResultSet resultSetCheck = stmtSelect.executeQuery(selectQuery);
 
-        ArrayList<VideoListItem> allUserVideosList = new ArrayList<>();
-        while(resultSetCheck.next()) {
-            allUserVideosList.add(new VideoListItem(resultSetCheck.getString("userName"), resultSetCheck.getString("videoName")));
+            int videoCount = resultSetCheck.getInt("videoCount");
+
+            return videoCount > 0;
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
-        stmtSelect.close();
-        return allUserVideosList;
+
+        return false;
     }
 
-    ArrayList<VideoListItem> allStoryVideos(String username) throws SQLException {
+    public ArrayList<VideoListItem> allUserVideos(String username) {
 
-        String selectIDQuery = "SELECT user_id AS userID from videoDB.Users WHERE user_name = " + username + ";" ;
-        Statement stmtIDSelect = conn.createStatement();
-        ResultSet resultSet = stmtIDSelect.executeQuery(selectIDQuery);
-        int userID = resultSet.getInt("userID");
-        stmtIDSelect.close();
+        String selectIDQuery = "SELECT user_id AS userID from " + Config.dbUserTable + " WHERE user_name = " + username + ";";
+        Statement stmtIDSelect = null;
+        try {
+            stmtIDSelect = conn.createStatement();
 
-        String selectQuery = "SELECT u.user_name AS userName, v.video_name AS videoName FROM videoDB.Users JOIN videoDB.Videos  ON (user_id) WHERE user_id != " + userID + ";";
-        Statement stmtSelect = conn.createStatement();
-        ResultSet resultSetCheck = stmtSelect.executeQuery(selectQuery);
+            ResultSet resultSet = stmtIDSelect.executeQuery(selectIDQuery);
+            int userID = resultSet.getInt("userID");
+            stmtIDSelect.close();
 
-        ArrayList<VideoListItem> allStoryVideos = new ArrayList<>();
-        while(resultSetCheck.next()) {
-            allStoryVideos.add(new VideoListItem(resultSetCheck.getString("userName"), resultSetCheck.getString("videoName")));
+            String selectQuery = "SELECT u.user_name AS userName, v.video_name AS videoName FROM " + Config.dbUserTable + " JOIN " + Config.dbVideoTable + "  ON (user_id) WHERE user_id = " + userID + ";";
+            Statement stmtSelect = conn.createStatement();
+            ResultSet resultSetCheck = stmtSelect.executeQuery(selectQuery);
+
+            ArrayList<VideoListItem> allUserVideosList = new ArrayList<>();
+            while (resultSetCheck.next()) {
+                allUserVideosList.add(new VideoListItem(resultSetCheck.getString("userName"), resultSetCheck.getString("videoName")));
+            }
+            stmtSelect.close();
+
+
+            return allUserVideosList;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
-        stmtSelect.close();
-        return allStoryVideos;
+
+        return null;
     }
 
-    ArrayList<VideoListItem> allVideos(String username) throws SQLException {
+    public ArrayList<VideoListItem> allStoryVideos(String username) {
+
+        String selectIDQuery = "SELECT user_id AS userID from " + Config.dbUserTable + " WHERE user_name = " + username + ";";
+        Statement stmtIDSelect = null;
+        try {
+            stmtIDSelect = conn.createStatement();
+
+            ResultSet resultSet = stmtIDSelect.executeQuery(selectIDQuery);
+            int userID = resultSet.getInt("userID");
+            stmtIDSelect.close();
+
+            String selectQuery = "SELECT u.user_name AS userName, v.video_name AS videoName FROM " +
+                    Config.dbUserTable + " JOIN " + Config.dbVideoTable + "  ON (user_id) WHERE user_id != " + userID +
+                    " AND is_visible = TRUE" + ";";
+            Statement stmtSelect = conn.createStatement();
+            ResultSet resultSetCheck = stmtSelect.executeQuery(selectQuery);
+
+            ArrayList<VideoListItem> allStoryVideos = new ArrayList<>();
+            while (resultSetCheck.next()) {
+                allStoryVideos.add(new VideoListItem(resultSetCheck.getString("userName"), resultSetCheck.getString("videoName")));
+            }
+            stmtSelect.close();
+            return allStoryVideos;
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public ArrayList<VideoListItem> allVideos(String username) {
 
         ArrayList<VideoListItem> allStoryVideos = allStoryVideos(username);
         ArrayList<VideoListItem> allUserVideosList = allUserVideos(username);
-        ArrayList<VideoListItem> allVideos = new  ArrayList<>();
+        ArrayList<VideoListItem> allVideos = new ArrayList<>();
         allVideos.addAll(allStoryVideos);
         allVideos.addAll(allUserVideosList);
 
         return allVideos;
     }
+
 
 
 }

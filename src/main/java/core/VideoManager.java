@@ -2,6 +2,7 @@ package core;
 
 import com.google.gson.Gson;
 import core.db.DatabaseConnector;
+import core.db.VideoMapper;
 import io.github.techgnious.exception.VideoException;
 
 import java.io.IOException;
@@ -70,27 +71,26 @@ public class VideoManager {
     // funckje implementujace
 
     private boolean _onUploadVideo(String username, String videoname, VisibilityType initialVisiilty){
-
-
-        return true;
+        String isVisible = "TRUE";
+        if (initialVisiilty == VisibilityType.Private) {
+            isVisible = "FALSE";
+        }
+        return dbConn.videoMapper.insert(username, videoname, isVisible);
     }
 
     // nalezy usunac wpis z bazy
     private boolean _onDeleteVideo(String username, String videoname) {
-        // TODO:
-
-
-        // false jesli video o takiej nazwie nie istnieje lub istnieje ale nie jest tego uzytkownika
-        return false;
+        return dbConn.videoMapper.delete(username, videoname);
     }
 
-    // nalezy zwrocic token video z bazy jesli istnieje
     private Map.Entry<Boolean, String> _onStreamVideo(String username, String videoname) {
         String token = null;
-        // TODO:
-        // ...
 
-        return Map.entry(true, token);
+        boolean accessible = dbConn.videoMapper.checkAccessibility(username, videoname);
+        if (accessible)
+            token = dbConn.videoMapper.token(username, videoname);
+
+        return Map.entry(accessible, token);
 
 
         // false jesli nie znaleziono videoname dla username lub niema videoname w publicznych
@@ -99,17 +99,19 @@ public class VideoManager {
 
     // nalezy sprawdzic czy uzytkownik istnieje
     private boolean _onLogin(String username, String userpass) {
-        // TODO
-        return true;
+        return dbConn.userMapper.select(username, userpass);
     }
 
-    // w zaleznosci od typu wyslac response
     private String _onGetVideoList(String username, GetVideoListRequestType type) {
-        ArrayList<VideoListItem> list = new ArrayList<>();
 
-        // TODO:
-        // do tej listy nalezy dodac wpisy z bazy, np list.add(new VideoListItem("username", "videoname"))
-        // tu twoja logika
+        ArrayList<VideoListItem> list = null;
+
+        if (type == GetVideoListRequestType.All)
+            list = dbConn.videoMapper.allVideos(username);
+        else if (type == GetVideoListRequestType.Story)
+            list = dbConn.videoMapper.allStoryVideos(username);
+        else
+            list = dbConn.videoMapper.allUserVideos(username);
 
         Gson gson = new Gson();
         String result = gson.toJson(list);
@@ -117,10 +119,12 @@ public class VideoManager {
     }
 
     private boolean _onChangeVisibility(String username, String videoname, VisibilityType type) {
-        // TODO:
+        String isVisible = "TRUE";
+        if (type == VisibilityType.Private) {
+            isVisible = "FALSE";
+        }
 
-        // zwracasz true jesli zmieniono pomyslnie, false jesli nie bylo zmienione bo juz byla taka ustawiona
-        return true;
+        return dbConn.videoMapper.update(username, videoname, isVisible);
     }
 
 }

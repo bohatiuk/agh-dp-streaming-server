@@ -1,7 +1,11 @@
 package core;
 
 import com.google.gson.Gson;
+import core.db.DatabaseConnector;
+import io.github.techgnious.exception.VideoException;
 
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Map;
@@ -28,14 +32,17 @@ public class VideoManager {
     }
 
     public enum VisibilityType {
-        Private,
-        Public
+        Private, // false
+        Public // true w bazie
     }
 
+    static public DatabaseConnector getDatabaseConnector(){
+        return getInstance().dbConn;
+    }
 
     // Wlasciwe API
-    public static boolean onUploadVideo(String username, String videoname) {
-        return getInstance()._onUploadVideo(username, videoname);
+    public static boolean onUploadVideo(String username, String videoname,VisibilityType initialVisiilty){
+        return getInstance()._onUploadVideo(username, videoname, initialVisiilty);
     }
 
     public static boolean onDeleteVideo(String username, String videoname) {
@@ -62,24 +69,10 @@ public class VideoManager {
 
     // funckje implementujace
 
-    // nalezy dodac wpis do bazy, zhashowana wersje nazwy video
-    // zhashowana wersja to moze byc jais prostu md5 hash + sol
-    private boolean _onUploadVideo(String username, String videoname) {
-        // TODO:
-        // 1. zgenerowac hash na pdostawie username i videoname
-        String hash = "..." + ".mp4";
-        // 2. sprwadzic czy para username i hash juz istnieje
-        // 3. jesli tak to false zwracac nalezy
-        // 4. jesli nie istnieje to dodac pare username i hash do tabeli videos z bazy i zworcic true
-        // 5. [JULKA] przy pomocy funkcji VideoDecoder.compress skompresowac plik wejsciowy .mp4 (bedzie lezal w Config.uploadDir),
-        // plik stary usunac natomiast nadac temu skompresowanemu nazwe {HASH}.mp4
-        // 6. funkcja VideoDecoder.toHls skonwertowac do postaci HLS, juz to zrobilem
-
-        // ewentualnei trzeba bedzie usunac ten plik .mp4 skompresowany tez
+    private boolean _onUploadVideo(String username, String videoname, VisibilityType initialVisiilty){
 
 
-        return false;
-
+        return true;
     }
 
     // nalezy usunac wpis z bazy

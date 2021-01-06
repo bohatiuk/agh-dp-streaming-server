@@ -1,12 +1,14 @@
-package core;
+package core.db;
 
-import javax.xml.crypto.Data;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import core.Config;
+
+import java.sql.*;
 
 public class DatabaseConnector {
-    private Connection conn = null;
+
+    private  Connection conn = null;
+    public UserMapper userMapper = null;
+    public VideoMapper videoMapper = null;
 
     public DatabaseConnector() {
         try {
@@ -17,6 +19,8 @@ public class DatabaseConnector {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
+        userMapper = new UserMapper(conn);
+        videoMapper = new VideoMapper(conn);
     }
 
 }

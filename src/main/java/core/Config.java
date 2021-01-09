@@ -1,9 +1,13 @@
 package core;
 
 public class Config {
-    public static String storageLocation = "C:\\Users\\" + System.getProperty("user.name") + "\\IdeaProjects\\dp-server-test\\storage\\";
-    public static String ffmpegLocation = "C:\\Users\\" + System.getProperty("user.name") + "\\IdeaProjects\\dp-server-test\\vendor\\ffmpeg.exe ";
-    public static String uploadDir = "C:\\Users\\" + System.getProperty("user.name") + "\\IdeaProjects\\dp-server-test\\storage\\tmp";
+    public static String projectLocation = "C:\\Users\\" + System.getProperty("user.name") + "\\IdeaProjects\\dp-server-test\\";
+    public static String storageLocation = projectLocation + "storage\\";
+    public static String uploadDir = storageLocation + "tmp";
+    public static String ffmpegLocation = projectLocation + "vendor\\ffmpeg.exe";
+
+    public static String apacheUploadDir = "C:\\wamp64\\www\\AndroidFileUpload\\uploads";
+
 
     public static String dbName = "postgres";
     public static String dbVideoTable = "videoDB.Videos";

@@ -29,7 +29,7 @@ public class UploadVideoServlet extends HttpServlet {
             }
 
 
-            if (VideoManager.onUploadVideo(username, videoname))
+            if (VideoManager.onUploadVideo(username, videoname, VideoManager.VisibilityType.Public))
                 response.setStatus(200); // 200 -> OK
             else
                 response.setStatus(409); // 409 -> conflict, entry with username and videoname exists

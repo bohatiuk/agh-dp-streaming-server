@@ -24,7 +24,8 @@ public class LoginServlet extends HttpServlet {
         }
 
 
-        if (VideoManager.onLogin(username, userpass)) {
+       if (VideoManager.onLogin(username, userpass)) {
+//        if (true) {
             HttpSession session = request.getSession();
             session.setAttribute("username", username); // session ends in 30 minutes
             System.out.println(session.getAttribute("username"));

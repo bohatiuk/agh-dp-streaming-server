@@ -29,7 +29,7 @@ public class TestDBServlet extends HttpServlet {
         PrintWriter writer = response.getWriter();
 
         try {
-            Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "p");
+            Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "");
 
             Statement s = conn.createStatement();
             ResultSet rs = s.executeQuery("select * from users");

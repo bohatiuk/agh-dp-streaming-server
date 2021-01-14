@@ -12,6 +12,11 @@ public class DatabaseConnector {
 
     public DatabaseConnector() {
         try {
+            try {
+                Class.forName("org.postgresql.Driver");
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
             conn = DriverManager.getConnection(
                     "jdbc:postgresql://localhost:5432/" + Config.dbName,
                     Config.dbUser,

@@ -15,9 +15,9 @@ public class UserMapper extends AbstractDataMapper {
     }
 
     public boolean select(String userName, String password) {
-        String query = "SELECT COUNT (*) AS rowcount FROM" + Config.dbUserTable + " WHERE user_name = " + userName + " AND user_password = "
-                + password + ";";
-
+        String query = "SELECT COUNT (*) AS rowcount FROM " + Config.dbUserTable + " WHERE Users.user_name ='" + userName + "' AND Users.user_password = '"
+                + password + "';";
+        System.out.println(query);
         Statement stmt = null;
         try {
             stmt = conn.createStatement();

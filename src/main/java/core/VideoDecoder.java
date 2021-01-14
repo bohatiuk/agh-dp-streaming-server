@@ -51,8 +51,8 @@ public class VideoDecoder{
     }
 
     private static IVSize setSize(IVSize customRes){
-        customRes.setWidth(400);
-        customRes.setHeight(300);
+        customRes.setWidth(1360);
+        customRes.setHeight(768);
         return customRes;
     }
 

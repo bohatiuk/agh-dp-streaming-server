@@ -19,7 +19,23 @@ public class VideoMapper extends AbstractDataMapper {
     }
 
     public String token(String username, String videoname) {
-        String selectQuery = "SELECT video_token AS token from " + VideoManager.config.dbUserTable + " WHERE user_name = '" + username + "' AND video_name = '" + videoname + "';";
+        String selectID = "SELECT user_id AS userID from " + VideoManager.config.dbUserTable + " WHERE user_name = '" + username + "';";
+        Statement stmtID = null;
+        Integer userID = null;
+        try {
+            stmtID = conn.createStatement();
+
+            ResultSet resultSet = stmtID.executeQuery(selectID);
+            if (resultSet.next()) {
+                userID = resultSet.getInt("userID");
+//                System.out.println(userID);
+            }
+            stmtID.close();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        String selectQuery = "SELECT video_token AS token from " + VideoManager.config.dbVideoTable + " WHERE user_id = '" + userID + "' AND video_name = '" + videoname + "';";
         Statement stmtSelect = null;
         String token = null;
         try {
@@ -35,7 +51,6 @@ public class VideoMapper extends AbstractDataMapper {
         }
         return null;
     }
-
 
 
     public boolean insert(String username, String videoname, String initialVisiilty) {
@@ -217,7 +232,7 @@ public class VideoMapper extends AbstractDataMapper {
             stmtIDSelect.close();
 
             String selectQuery = "SELECT u.user_name AS userName, v.video_name AS videoName FROM " +
-                    VideoManager.config.dbUserTable + " u JOIN " + VideoManager.config.dbVideoTable + " v USING (user_id) WHERE v.user_id = " + userID +";";
+                    VideoManager.config.dbUserTable + " u JOIN " + VideoManager.config.dbVideoTable + " v USING (user_id) WHERE v.user_id = " + userID + ";";
             Statement stmtSelect = conn.createStatement();
             ResultSet resultSetCheck = stmtSelect.executeQuery(selectQuery);
 
@@ -283,7 +298,6 @@ public class VideoMapper extends AbstractDataMapper {
 
         return allVideos;
     }
-
 
 
 }

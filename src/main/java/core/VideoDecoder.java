@@ -30,7 +30,7 @@ public class VideoDecoder{
         setVideoAttribute(videoAttribute,customRes);
 
 
-        String inputFileLocation = VideoManager.config.uploadDir + videoName + ".mp4";
+        String inputFileLocation = VideoManager.config.uploadDir + videoName;
         byte[] oldVideoBytes = Files.readAllBytes(Paths.get(inputFileLocation));
         byte[] newVideoBytes = compressor.encodeVideoWithAttributes(oldVideoBytes, VideoFormats.MP4,audioAttribute, videoAttribute);
 
@@ -48,7 +48,7 @@ public class VideoDecoder{
         }
 
         Files.deleteIfExists(Paths.get(inputFileLocation));
-        return outputFileLocation;
+        return videoToken;
     }
 
     private static IVSize setSize(IVSize customRes){
@@ -74,7 +74,7 @@ public class VideoDecoder{
     public static void toHls(String videoToken) {
         File directory = new File("./");
         String absolutePath = directory.getAbsolutePath();
-        absolutePath = absolutePath.substring(0, absolutePath.length() - 1) + "..\\..\\..\\";
+        absolutePath = absolutePath.substring(0, absolutePath.length() - 1);
         final String inputFileLocation = absolutePath + VideoManager.config.uploadDir + videoToken + ".mp4";
         final String outputFileLocation = absolutePath + VideoManager.config.storageLocation + videoToken + "/index.m3u8";
 

@@ -93,7 +93,7 @@ public class VideoManager {
         if (accessible)
             token = dbConn.videoMapper.token(username, videoname);
 
-        String uri = "localhost:8081/" + token + "/index.m3u8";
+        String uri = "{uri: \"10.0.2.2:8081/" + token + "/index.m3u8\"}";
         return Map.entry(accessible, uri);
 
 

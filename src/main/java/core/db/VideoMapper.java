@@ -198,7 +198,7 @@ public class VideoMapper extends AbstractDataMapper {
             stmtIDSelect.close();
 
             String selectQuery = "SELECT COUNT (*) AS videoCount, u.user_name AS userName, v.video_name AS videoName FROM " + VideoManager.config.dbUserTable + " JOIN " +
-                    VideoManager.config.dbVideoTable + "  ON (user_id) WHERE" +
+                    VideoManager.config.dbVideoTable + "  USING (user_id) WHERE" +
                     "(is_visible = TRUE OR user_id = " + userID + ") AND video_name = '" + videoname + "';";
             Statement stmtSelect = conn.createStatement();
             ResultSet resultSetCheck = stmtSelect.executeQuery(selectQuery);

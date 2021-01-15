@@ -92,4 +92,15 @@
         <url-pattern>/stream</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>UploadFinishedServlet</servlet-name>
+        <servlet-class>servlets.UploadFinishedServlet</servlet-class>
+    </servlet>
+
+
+    <servlet-mapping>
+        <servlet-name>UploadFinishedServlet</servlet-name>
+        <url-pattern>/upload-finished</url-pattern>
+    </servlet-mapping>
+
 </web-app>

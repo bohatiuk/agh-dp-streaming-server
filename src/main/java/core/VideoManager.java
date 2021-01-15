@@ -15,7 +15,9 @@ import java.util.Map;
 // trzeba by tu otworzyc sesje z baza i tryzmac ja zamiast tego by caly czas otwierac i zamykac
 public class VideoManager {
     private static final VideoManager INSTANCE = new VideoManager();
+    private Config config = new Config();
     private DatabaseConnector dbConn = new DatabaseConnector();
+
 
     private static VideoManager getInstance() {
         return INSTANCE;
@@ -90,7 +92,8 @@ public class VideoManager {
         if (accessible)
             token = dbConn.videoMapper.token(username, videoname);
 
-        return Map.entry(accessible, token);
+        String uri = "localhost:8081/" + token + "/index.m3u8";
+        return Map.entry(accessible, uri);
 
 
         // false jesli nie znaleziono videoname dla username lub niema videoname w publicznych

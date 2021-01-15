@@ -72,7 +72,13 @@ public class VideoDecoder{
     // zakladam tu ze funkcja wywolujaca poda hash tego video
     public static void toHls(String videoToken) {
         final String inputFileLocation = Config.uploadDir + videoToken + ".mp4";
-        final String outputFileLocation = Config.storageLocation + videoToken + "\\index.m3u8";
+        final String outputFileLocation = Config.storageLocation + videoToken + "/index.m3u8";
+
+        File newDir = new File(Config.storageLocation + videoToken);
+        if (!newDir.exists()){
+            newDir.mkdirs();
+        }
+
         try {
             Runtime.getRuntime().exec(
                     "cmd /c start" +

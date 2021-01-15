@@ -1,0 +1,11 @@
+{
+storageLocation: "../../../storage/",
+uploadDir: "../../../storage/tmp/",
+ffmpegLocation: "../../../vendor/ffmpeg.exe",
+dbName:"postgres",
+dbVideoTable: "public.Videos",
+dbUserTable: "public.Users",
+dbUser: "postgres",
+dbPass: "p",
+hashMethod: "md5"
+}

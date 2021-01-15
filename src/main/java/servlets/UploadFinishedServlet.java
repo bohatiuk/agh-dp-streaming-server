@@ -22,12 +22,14 @@ public class UploadFinishedServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
 
-        String filename = (String) request.getSession().getAttribute("filename");
+        String filename = (String) request.getParameter("filename");
         String username = filename.substring(0, filename.indexOf("_"));
         String videoname = filename.substring(0, filename.indexOf("."));
 
+
         try {
             VideoDecoder.toHls(VideoDecoder.compress(username, videoname));
+
         }
         catch (VideoException e) {
             e.printStackTrace();

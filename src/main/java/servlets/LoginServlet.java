@@ -23,7 +23,6 @@ public class LoginServlet extends HttpServlet {
             return;
         }
 
-
        if (VideoManager.onLogin(username, userpass)) {
 //        if (true) {
             HttpSession session = request.getSession();

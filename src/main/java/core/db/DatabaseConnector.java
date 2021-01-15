@@ -1,6 +1,6 @@
 package core.db;
 
-import core.Config;
+import core.VideoManager;
 
 import java.sql.*;
 
@@ -18,9 +18,9 @@ public class DatabaseConnector {
                 e.printStackTrace();
             }
             conn = DriverManager.getConnection(
-                    "jdbc:postgresql://localhost:5432/" + Config.dbName,
-                    Config.dbUser,
-                    Config.dbPass);
+                    "jdbc:postgresql://localhost:5432/" + VideoManager.config.dbName,
+                    VideoManager.config.dbUser,
+                    VideoManager.config.dbPass);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }

@@ -1,7 +1,7 @@
 
 package core.db;
 
-import core.Config;
+import core.VideoManager;
 import core.VideoListItem;
 
 
@@ -19,7 +19,7 @@ public class VideoMapper extends AbstractDataMapper {
     }
 
     public String token(String username, String videoname) {
-        String selectQuery = "SELECT video_token AS token from " + Config.dbUserTable + " WHERE user_name = '" + username + "' AND video_name = '" + videoname + "';";
+        String selectQuery = "SELECT video_token AS token from " + VideoManager.config.dbUserTable + " WHERE user_name = '" + username + "' AND video_name = '" + videoname + "';";
         Statement stmtSelect = null;
         String token = null;
         try {
@@ -40,7 +40,7 @@ public class VideoMapper extends AbstractDataMapper {
 
     public boolean insert(String username, String videoname, String initialVisiilty) {
 
-        String selectQuery = "SELECT user_id AS userID from " + Config.dbUserTable + " WHERE user_name = '" + username + "';";
+        String selectQuery = "SELECT user_id AS userID from " + VideoManager.config.dbUserTable + " WHERE user_name = '" + username + "';";
         Statement stmtSelect = null;
         Integer userID = null;
         try {
@@ -54,7 +54,7 @@ public class VideoMapper extends AbstractDataMapper {
             stmtSelect.close();
 
 
-            String selectCheckQuery = "SELECT COUNT (*) AS videoCount  FROM " + Config.dbVideoTable + " WHERE user_id = '" + userID + "' and video_name = '"
+            String selectCheckQuery = "SELECT COUNT (*) AS videoCount  FROM " + VideoManager.config.dbVideoTable + " WHERE user_id = '" + userID + "' and video_name = '"
                     + videoname + "';";
             Statement stmtSelectCheck = conn.createStatement();
             ResultSet resultSetCheck = stmtSelectCheck.executeQuery(selectCheckQuery);
@@ -66,8 +66,8 @@ public class VideoMapper extends AbstractDataMapper {
                 return false;
             }
 
-            String insertQuery = "INSERT INTO " + Config.dbVideoTable + "(user_id ,video_name, video_token, is_visible) VALUES (" +
-                    userID + ", '" + videoname + "'," + Config.hashMethod + "('" + videoname + "')," + initialVisiilty + ";";
+            String insertQuery = "INSERT INTO " + VideoManager.config.dbVideoTable + " (user_id ,video_name, video_token, is_visible) VALUES (" +
+                    userID + ", '" + videoname + "'," + VideoManager.config.hashMethod + "('" + videoname + "')," + initialVisiilty + ");";
             Statement stmtInsert = conn.createStatement();
             stmtInsert.executeUpdate(insertQuery);
             stmtInsert.close();
@@ -82,7 +82,7 @@ public class VideoMapper extends AbstractDataMapper {
 
     public boolean update(String username, String videoname, String type) {
 
-        String selectQuery = "SELECT user_id AS userID from " + Config.dbUserTable + " WHERE user_name = '" + username + "';";
+        String selectQuery = "SELECT user_id AS userID from " + VideoManager.config.dbUserTable + " WHERE user_name = '" + username + "';";
         Statement stmtSelect = null;
         Integer userID = null;
         try {
@@ -96,7 +96,7 @@ public class VideoMapper extends AbstractDataMapper {
             stmtSelect.close();
 
 
-            String selectCheckQuery = "SELECT COUNT (*) AS videoCount  FROM " + Config.dbVideoTable + " WHERE user_id = '" + userID + " 'AND video_name = '"
+            String selectCheckQuery = "SELECT COUNT (*) AS videoCount  FROM " + VideoManager.config.dbVideoTable + " WHERE user_id = '" + userID + " 'AND video_name = '"
                     + videoname + "'AND is_visible = " + type + ";";
             Statement stmtSelectCheck = conn.createStatement();
             ResultSet resultSetCheck = stmtSelectCheck.executeQuery(selectCheckQuery);
@@ -108,7 +108,7 @@ public class VideoMapper extends AbstractDataMapper {
                 return false;
             }
 
-            String updateQuery = "UPDATE " + Config.dbVideoTable + " SET is_visible = " + type + "WHERE user_id = " + userID + " AND video_name = '" +
+            String updateQuery = "UPDATE " + VideoManager.config.dbVideoTable + " SET is_visible = " + type + "WHERE user_id = " + userID + " AND video_name = '" +
                     videoname + "';";
             Statement stmtUpdate = conn.createStatement();
             stmtUpdate.executeUpdate(updateQuery);
@@ -124,7 +124,7 @@ public class VideoMapper extends AbstractDataMapper {
 
     public boolean delete(String username, String videoname) {
 
-        String selectQuery = "SELECT user_id AS userID from " + Config.dbUserTable + " WHERE user_name = '" + username + "';";
+        String selectQuery = "SELECT user_id AS userID from " + VideoManager.config.dbUserTable + " WHERE user_name = '" + username + "';";
         Statement stmtSelect = null;
         Integer userID = null;
         Integer videoCount = null;
@@ -139,7 +139,7 @@ public class VideoMapper extends AbstractDataMapper {
             stmtSelect.close();
 
 
-            String selectCheckQuery = "SELECT COUNT (*) AS videoCount  FROM " + Config.dbVideoTable + " WHERE user_id = " + userID + " AND video_name ='"
+            String selectCheckQuery = "SELECT COUNT (*) AS videoCount  FROM " + VideoManager.config.dbVideoTable + " WHERE user_id = " + userID + " AND video_name ='"
                     + videoname + "';";
             System.out.println(selectCheckQuery);
             Statement stmtSelectCheck = conn.createStatement();
@@ -154,7 +154,7 @@ public class VideoMapper extends AbstractDataMapper {
                 return false;
             }
 
-            String deleteQuery = "DELETE from " + Config.dbVideoTable + " where video_name ='" + videoname + "'and " +
+            String deleteQuery = "DELETE from " + VideoManager.config.dbVideoTable + " where video_name ='" + videoname + "'and " +
                     "user_id = " + userID + ";";
             System.out.println(deleteQuery);
             Statement stmtDelete = conn.createStatement();
@@ -168,7 +168,7 @@ public class VideoMapper extends AbstractDataMapper {
     }
 
     public boolean checkAccessibility(String username, String videoname) {
-        String selectIDQuery = "SELECT user_id AS userID from " + Config.dbUserTable + " WHERE user_name = '" + username + "';";
+        String selectIDQuery = "SELECT user_id AS userID from " + VideoManager.config.dbUserTable + " WHERE user_name = '" + username + "';";
         Statement stmtIDSelect = null;
         Integer userID = null;
         Integer videoCount = null;
@@ -182,8 +182,8 @@ public class VideoMapper extends AbstractDataMapper {
             }
             stmtIDSelect.close();
 
-            String selectQuery = "SELECT COUNT (*) AS videoCount, u.user_name AS userName, v.video_name AS videoName FROM " + Config.dbUserTable + " JOIN " +
-                    Config.dbVideoTable + "  ON (user_id) WHERE" +
+            String selectQuery = "SELECT COUNT (*) AS videoCount, u.user_name AS userName, v.video_name AS videoName FROM " + VideoManager.config.dbUserTable + " JOIN " +
+                    VideoManager.config.dbVideoTable + "  ON (user_id) WHERE" +
                     "(is_visible = TRUE OR user_id = " + userID + ") AND video_name = '" + videoname + "';";
             Statement stmtSelect = conn.createStatement();
             ResultSet resultSetCheck = stmtSelect.executeQuery(selectQuery);
@@ -203,7 +203,7 @@ public class VideoMapper extends AbstractDataMapper {
 
     public ArrayList<VideoListItem> allUserVideos(String username) {
 
-        String selectIDQuery = "SELECT user_id AS userID from " + Config.dbUserTable + " WHERE user_name = '" + username + "';";
+        String selectIDQuery = "SELECT user_id AS userID from " + VideoManager.config.dbUserTable + " WHERE user_name = '" + username + "';";
         Statement stmtIDSelect = null;
         Integer userID = null;
         try {
@@ -217,7 +217,7 @@ public class VideoMapper extends AbstractDataMapper {
             stmtIDSelect.close();
 
             String selectQuery = "SELECT u.user_name AS userName, v.video_name AS videoName FROM " +
-                    Config.dbUserTable + " u JOIN " + Config.dbVideoTable + " v USING (user_id) WHERE v.user_id = " + userID +";";
+                    VideoManager.config.dbUserTable + " u JOIN " + VideoManager.config.dbVideoTable + " v USING (user_id) WHERE v.user_id = " + userID +";";
             Statement stmtSelect = conn.createStatement();
             ResultSet resultSetCheck = stmtSelect.executeQuery(selectQuery);
 
@@ -239,7 +239,7 @@ public class VideoMapper extends AbstractDataMapper {
 
     public ArrayList<VideoListItem> allStoryVideos(String username) {
 
-        String selectIDQuery = "SELECT user_id AS userID from " + Config.dbUserTable + " WHERE user_name = '" + username + "';";
+        String selectIDQuery = "SELECT user_id AS userID from " + VideoManager.config.dbUserTable + " WHERE user_name = '" + username + "';";
         Statement stmtIDSelect = null;
         Integer userID = null;
         try {
@@ -253,7 +253,7 @@ public class VideoMapper extends AbstractDataMapper {
             stmtIDSelect.close();
 
             String selectQuery = "SELECT u.user_name AS userName, v.video_name AS videoName FROM " +
-                    Config.dbUserTable + " u JOIN " + Config.dbVideoTable + " v USING (user_id) WHERE v.user_id != " + userID +
+                    VideoManager.config.dbUserTable + " u JOIN " + VideoManager.config.dbVideoTable + " v USING (user_id) WHERE v.user_id != " + userID +
                     " AND v.is_visible = TRUE" + ";";
             System.out.println(selectQuery);
             Statement stmtSelect = conn.createStatement();

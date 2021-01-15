@@ -29,12 +29,13 @@ public class VideoDecoder{
         IVVideoAttributes videoAttribute = new IVVideoAttributes();
         setVideoAttribute(videoAttribute,customRes);
 
-        String inputFileLocation = Config.uploadDir + videoName + ".mp4";
+
+        String inputFileLocation = VideoManager.config.uploadDir + videoName + ".mp4";
         byte[] oldVideoBytes = Files.readAllBytes(Paths.get(inputFileLocation));
         byte[] newVideoBytes = compressor.encodeVideoWithAttributes(oldVideoBytes, VideoFormats.MP4,audioAttribute, videoAttribute);
 
         String videoToken = VideoManager.getDatabaseConnector().videoMapper.token(userName,videoName);
-        String outputFileLocation = Config.uploadDir + videoToken + ".mp4";
+        String outputFileLocation = VideoManager.config.uploadDir + videoToken + ".mp4";
         File newVideoFile = new File(outputFileLocation);
 
         try {
@@ -71,21 +72,26 @@ public class VideoDecoder{
     }
     // zakladam tu ze funkcja wywolujaca poda hash tego video
     public static void toHls(String videoToken) {
-        final String inputFileLocation = Config.uploadDir + videoToken + ".mp4";
-        final String outputFileLocation = Config.storageLocation + videoToken + "/index.m3u8";
+        File directory = new File("./");
+        String absolutePath = directory.getAbsolutePath();
+        absolutePath = absolutePath.substring(0, absolutePath.length() - 1) + "..\\..\\..\\";
+        final String inputFileLocation = absolutePath + VideoManager.config.uploadDir + videoToken + ".mp4";
+        final String outputFileLocation = absolutePath + VideoManager.config.storageLocation + videoToken + "/index.m3u8";
 
-        File newDir = new File(Config.storageLocation + videoToken);
+        File newDir = new File(VideoManager.config.storageLocation + videoToken);
         if (!newDir.exists()){
             newDir.mkdirs();
         }
 
+
+
         try {
             Runtime.getRuntime().exec(
                     "cmd /c start" +
-                    Config.ffmpegLocation +
-                    "-i" + inputFileLocation +
-                    "-profile:v baseline -level 3.0 -s 640x360 -start_number 0 -hls_time 10 -hls_list_size 0"
-                    + "-f hls" + outputFileLocation);
+                            VideoManager.config.ffmpegLocation +
+                            " -i " + inputFileLocation +
+                            " -profile:v baseline -level 3.0 -s 640x360 -start_number 0 -hls_time 10 -hls_list_size 0 "
+                            + " -f hls " + outputFileLocation);
         } catch (IOException e) {
             e.printStackTrace();
         }

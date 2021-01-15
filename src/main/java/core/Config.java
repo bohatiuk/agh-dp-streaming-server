@@ -5,18 +5,18 @@ import com.google.gson.Gson;
 import java.io.*;
 
 public class Config {
-    public static String storageLocation = null;
-    public static String uploadDir = null;
-    public static String ffmpegLocation = null;
+    public String storageLocation;
+    public String uploadDir;
+    public String ffmpegLocation;
 
 
-    public static String dbName = null;
-    public static String dbVideoTable = null;
-    public static String dbUserTable = null;
-    public static String dbUser = null;
-    public static String dbPass = null;
+    public String dbName;
+    public String dbVideoTable;
+    public String dbUserTable;
+    public String dbUser;
+    public String dbPass;
 
-    public static String hashMethod = null;
+    public static String hashMethod;
 
     public Config() {
 

@@ -15,8 +15,8 @@ import java.util.Map;
 // trzeba by tu otworzyc sesje z baza i tryzmac ja zamiast tego by caly czas otwierac i zamykac
 public class VideoManager {
     private static final VideoManager INSTANCE = new VideoManager();
-    private Config config = new Config();
-    private DatabaseConnector dbConn = new DatabaseConnector();
+    public static Config config;
+    private DatabaseConnector dbConn;
 
 
     private static VideoManager getInstance() {
@@ -25,7 +25,8 @@ public class VideoManager {
 
 
     private VideoManager() {
-
+        VideoManager.config = new Config();
+        dbConn = new DatabaseConnector();
     }
 
     public enum GetVideoListRequestType {

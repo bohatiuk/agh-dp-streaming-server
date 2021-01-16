@@ -15,24 +15,8 @@ public class VideoMapper extends AbstractDataMapper {
         super.conn = con;
     }
 
-    public String token(String username, String videoname) {
-        String selectID = "SELECT user_id AS userID from " + VideoManager.config.dbUserTable + " WHERE user_name = '" + username + "';";
-        Statement stmtID = null;
-        Integer userID = null;
-        try {
-            stmtID = conn.createStatement();
-
-            ResultSet resultSet = stmtID.executeQuery(selectID);
-            if (resultSet.next()) {
-                userID = resultSet.getInt("userID");
-//                System.out.println(userID);
-            }
-            stmtID.close();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-
-        String selectQuery = "SELECT video_token AS token from " + VideoManager.config.dbVideoTable + " WHERE user_id = '" + userID + "' AND video_name = '" + videoname + "';";
+    public String token(String videoname) {
+        String selectQuery = "SELECT video_token AS token from " + VideoManager.config.dbVideoTable + " WHERE video_name = '" + videoname + "';";
         Statement stmtSelect = null;
         String token = null;
         try {

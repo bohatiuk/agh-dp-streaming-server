@@ -34,7 +34,7 @@ public class VideoDecoder{
         byte[] oldVideoBytes = Files.readAllBytes(Paths.get(inputFileLocation));
         byte[] newVideoBytes = compressor.encodeVideoWithAttributes(oldVideoBytes, VideoFormats.MP4,audioAttribute, videoAttribute);
 
-        String videoToken = VideoManager.getDatabaseConnector().videoMapper.token(userName,videoName);
+        String videoToken = VideoManager.getDatabaseConnector().videoMapper.token(videoName);
         String outputFileLocation = VideoManager.config.uploadDir + videoToken + ".mp4";
         File newVideoFile = new File(outputFileLocation);
 

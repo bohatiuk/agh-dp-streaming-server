@@ -11,8 +11,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Map;
 
-// najprawdopodobniej to bedzie signleton, bo
-// trzeba by tu otworzyc sesje z baza i tryzmac ja zamiast tego by caly czas otwierac i zamykac
+
 public class VideoManager {
     private static final VideoManager INSTANCE = new VideoManager();
     public static Config config;
@@ -71,8 +70,6 @@ public class VideoManager {
     }
 
 
-    // funckje implementujace
-
     private boolean _onUploadVideo(String username, String videoname, VisibilityType initialVisiilty){
         String isVisible = "TRUE";
         if (initialVisiilty == VisibilityType.Private) {
@@ -81,7 +78,6 @@ public class VideoManager {
         return dbConn.videoMapper.insert(username, videoname, isVisible);
     }
 
-    // nalezy usunac wpis z bazy
     private boolean _onDeleteVideo(String username, String videoname) {
         return dbConn.videoMapper.delete(username, videoname);
     }
@@ -91,14 +87,10 @@ public class VideoManager {
 
         boolean accessible = dbConn.videoMapper.checkAccessibility(username, videoname);
         if (accessible)
-            token = dbConn.videoMapper.token(username, videoname);
+            token = dbConn.videoMapper.token(videoname);
 
-        String uri = "{uri: \"10.0.2.2:8081/" + token + "/index.m3u8\"}";
+        String uri = "{url: \"http://10.0.2.2:8081/" + token + "/index.m3u8\"}";
         return Map.entry(accessible, uri);
-
-
-        // false jesli nie znaleziono videoname dla username lub niema videoname w publicznych
-        //return Map.entry(false, null);
     }
 
     // nalezy sprawdzic czy uzytkownik istnieje

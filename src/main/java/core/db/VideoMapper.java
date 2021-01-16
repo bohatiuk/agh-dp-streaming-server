@@ -5,10 +5,7 @@ import core.VideoManager;
 import core.VideoListItem;
 
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 
 
@@ -112,19 +109,21 @@ public class VideoMapper extends AbstractDataMapper {
 
 
             String selectCheckQuery = "SELECT COUNT (*) AS videoCount  FROM " + VideoManager.config.dbVideoTable + " WHERE user_id = '" + userID + " 'AND video_name = '"
-                    + videoname + "'AND is_visible = " + type + ";";
+                    + videoname + "' AND is_visible = " + type + ";";
+            System.out.println(selectCheckQuery);
             Statement stmtSelectCheck = conn.createStatement();
             ResultSet resultSetCheck = stmtSelectCheck.executeQuery(selectCheckQuery);
             resultSetCheck.next();
             int videoCount = resultSetCheck.getInt("videoCount");
             stmtSelectCheck.close();
-
+            System.out.println(videoCount);
             if (videoCount != 0) {
                 return false;
             }
 
-            String updateQuery = "UPDATE " + VideoManager.config.dbVideoTable + " SET is_visible = " + type + "WHERE user_id = " + userID + " AND video_name = '" +
+            String updateQuery = "UPDATE " + VideoManager.config.dbVideoTable + " SET is_visible = " + type + " WHERE user_id = " + userID + " AND video_name = '" +
                     videoname + "';";
+            System.out.println(updateQuery);
             Statement stmtUpdate = conn.createStatement();
             stmtUpdate.executeUpdate(updateQuery);
             stmtUpdate.close();
@@ -197,9 +196,9 @@ public class VideoMapper extends AbstractDataMapper {
             }
             stmtIDSelect.close();
 
-            String selectQuery = "SELECT COUNT (*) AS videoCount, u.user_name AS userName, v.video_name AS videoName FROM " + VideoManager.config.dbUserTable + " JOIN " +
-                    VideoManager.config.dbVideoTable + "  USING (user_id) WHERE" +
-                    "(is_visible = TRUE OR user_id = " + userID + ") AND video_name = '" + videoname + "';";
+            String selectQuery = "SELECT COUNT (*) AS videoCount FROM " + VideoManager.config.dbVideoTable + " v  WHERE" +
+                    "(v.is_visible = TRUE OR v.user_id = " + userID + ") AND v.video_name = '" + videoname + "' GROUP BY v.user_id;";
+            System.out.println(selectQuery);
             Statement stmtSelect = conn.createStatement();
             ResultSet resultSetCheck = stmtSelect.executeQuery(selectQuery);
 
@@ -268,8 +267,8 @@ public class VideoMapper extends AbstractDataMapper {
             stmtIDSelect.close();
 
             String selectQuery = "SELECT u.user_name AS userName, v.video_name AS videoName FROM " +
-                    VideoManager.config.dbUserTable + " u JOIN " + VideoManager.config.dbVideoTable + " v USING (user_id) WHERE v.user_id != " + userID +
-                    " AND v.is_visible = TRUE" + ";";
+                    VideoManager.config.dbUserTable + " u JOIN " + VideoManager.config.dbVideoTable + " v USING (user_id) WHERE " +
+                    " v.is_visible = TRUE" + ";";
             System.out.println(selectQuery);
             Statement stmtSelect = conn.createStatement();
             ResultSet resultSetCheck = stmtSelect.executeQuery(selectQuery);

@@ -230,15 +230,20 @@ public class VideoMapper extends AbstractDataMapper {
             }
             stmtIDSelect.close();
 
-            String selectQuery = "SELECT u.user_name AS userName, v.video_name AS videoName FROM " +
+            String selectQuery = "SELECT u.user_name AS userName, v.video_name AS videoName, v.is_visible AS visibility FROM " +
                     VideoManager.config.dbUserTable + " u JOIN " + VideoManager.config.dbVideoTable + " v USING (user_id) WHERE v.user_id = " + userID + ";";
             Statement stmtSelect = conn.createStatement();
             ResultSet resultSetCheck = stmtSelect.executeQuery(selectQuery);
 
             ArrayList<VideoListItem> allUserVideosList = new ArrayList<>();
             while (resultSetCheck.next()) {
-                allUserVideosList.add(new VideoListItem(resultSetCheck.getString("userName"), resultSetCheck.getString("videoName")));
-//                System.out.println(resultSetCheck.getString("userName") + resultSetCheck.getString("videoName"));
+                if (resultSetCheck.getBoolean("visibility") == true) {
+                    allUserVideosList.add(new VideoListItem(resultSetCheck.getString("userName"), resultSetCheck.getString("videoName"),"public"));
+                    System.out.println(resultSetCheck.getString("userName") + resultSetCheck.getString("videoName"));
+                }
+                else {
+                    allUserVideosList.add(new VideoListItem(resultSetCheck.getString("userName"), resultSetCheck.getString("videoName"), "private"));
+                }
             }
             stmtSelect.close();
 
@@ -266,7 +271,7 @@ public class VideoMapper extends AbstractDataMapper {
             }
             stmtIDSelect.close();
 
-            String selectQuery = "SELECT u.user_name AS userName, v.video_name AS videoName FROM " +
+            String selectQuery = "SELECT u.user_name AS userName, v.video_name AS videoName,  v.is_visible AS visibility  FROM " +
                     VideoManager.config.dbUserTable + " u JOIN " + VideoManager.config.dbVideoTable + " v USING (user_id) WHERE " +
                     " v.is_visible = TRUE" + ";";
             System.out.println(selectQuery);
@@ -275,7 +280,13 @@ public class VideoMapper extends AbstractDataMapper {
 
             ArrayList<VideoListItem> allStoryVideos = new ArrayList<>();
             while (resultSetCheck.next()) {
-                allStoryVideos.add(new VideoListItem(resultSetCheck.getString("userName"), resultSetCheck.getString("videoName")));
+                if (resultSetCheck.getBoolean("visibility") == true) {
+                    allStoryVideos.add(new VideoListItem(resultSetCheck.getString("userName"), resultSetCheck.getString("videoName"),"public"));
+//                System.out.println(resultSetCheck.getString("userName") + resultSetCheck.getString("videoName"));
+                }
+                else {
+                    allStoryVideos.add(new VideoListItem(resultSetCheck.getString("userName"), resultSetCheck.getString("videoName"), "private"));
+                }
             }
             stmtSelect.close();
             return allStoryVideos;

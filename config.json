@@ -3,9 +3,10 @@ storageLocation: "../../../storage/",
 uploadDir: "../../../storage/tmp/",
 ffmpegLocation: "../../../vendor/ffmpeg.exe",
 dbName:"postgres",
-dbVideoTable: "videoDB.Videos",
-dbUserTable: "videoDB.Users",
+dbVideoTable: "public.Videos",
+dbUserTable: "public.Users",
 dbUser: "postgres",
 dbPass: "p",
-hashMethod: "md5"
+hashMethod: "md5",
+tokenTTL: "1"
 }

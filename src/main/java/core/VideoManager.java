@@ -2,14 +2,14 @@ package core;
 
 import com.google.gson.Gson;
 import core.db.DatabaseConnector;
-import core.db.VideoMapper;
-import io.github.techgnious.exception.VideoException;
 
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-import java.sql.*;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 
 public class VideoManager {
@@ -26,6 +26,36 @@ public class VideoManager {
     private VideoManager() {
         VideoManager.config = new Config();
         dbConn = new DatabaseConnector();
+
+        createTokenUpdateTask();
+    }
+
+    void createTokenUpdateTask() {
+        Runnable runnable = new Runnable() {
+            public void run() {
+                ArrayList<String> tokens = dbConn.videoMapper.getTokens();
+
+                for (int i = 0; i < tokens.size(); i++) {
+                    String oldToken = tokens.get(i);
+
+                    // regenerate token based on UUID
+                    String newToken = UUID.randomUUID().toString();
+
+                    // update token
+                    dbConn.videoMapper.updateToken(oldToken, newToken);
+
+                    // update dir name
+                    String path = VideoManager.config.storageLocation;
+                    File sourceFile = new File(path + oldToken);
+                    File destFile = new File(path + newToken);
+
+                    sourceFile.renameTo(destFile);
+                }
+            }
+        };
+
+        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+        executor.scheduleAtFixedRate(runnable, 0, Integer.parseInt(VideoManager.config.tokenTTL), TimeUnit.MINUTES);
     }
 
     public enum GetVideoListRequestType {
@@ -33,6 +63,8 @@ public class VideoManager {
         Story,
         All
     }
+
+
 
     public enum VisibilityType {
         Private, // false

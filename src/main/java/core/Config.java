@@ -16,7 +16,9 @@ public class Config {
     public String dbUser;
     public String dbPass;
 
-    public static String hashMethod;
+    public String hashMethod;
+
+    public String tokenTTL;
 
     public Config() {
 
@@ -35,6 +37,7 @@ public class Config {
             dbUser = object.dbUser;
             dbPass = object.dbPass;
             hashMethod = object.hashMethod;
+            tokenTTL = object.tokenTTL;
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -56,6 +59,7 @@ class JsonObject {
     String dbUser = null;
     String dbPass = null;
     String hashMethod = null;
+    String tokenTTL = null;
 
     public String getStorageLocation() {
         return storageLocation;
@@ -127,5 +131,13 @@ class JsonObject {
 
     public void setHashMethod(String hashMethod) {
         this.hashMethod = hashMethod;
+    }
+
+    public String getTokenTTL() {
+        return tokenTTL;
+    }
+
+    public void setTokenTTL(String tokenTTL) {
+        this.tokenTTL = tokenTTL;
     }
 }

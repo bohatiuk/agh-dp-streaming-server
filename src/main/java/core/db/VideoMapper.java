@@ -7,6 +7,7 @@ import core.VideoListItem;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Map;
 
 
 public class VideoMapper extends AbstractDataMapper {
@@ -31,6 +32,40 @@ public class VideoMapper extends AbstractDataMapper {
             throwables.printStackTrace();
         }
         return null;
+    }
+
+    public ArrayList<String> getTokens() {
+        ArrayList<String> result = new ArrayList<>();
+
+        String selectQuery = "SELECT video_token from " + VideoManager.config.dbVideoTable + ";";
+        Statement stmtSelect = null;
+        try {
+            stmtSelect = conn.createStatement();
+
+            ResultSet resultSet = stmtSelect.executeQuery(selectQuery);
+            while (resultSet.next()) {
+                result.add(resultSet.getString("video_token"));
+            }
+            stmtSelect.close();
+
+
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return result;
+    }
+
+    public void updateToken(String oldToken, String newToken) {
+        try {
+            String updateQuery = "UPDATE " + VideoManager.config.dbVideoTable + " SET video_token = " + newToken + " WHERE video_token = " + oldToken + ";";
+            Statement stmtUpdate = conn.createStatement();
+            stmtUpdate.executeUpdate(updateQuery);
+            stmtUpdate.close();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 
 
@@ -166,6 +201,7 @@ public class VideoMapper extends AbstractDataMapper {
     }
 
     public boolean checkAccessibility(String username, String videoname) {
+
         String selectIDQuery = "SELECT user_id AS userID from " + VideoManager.config.dbUserTable + " WHERE user_name = '" + username + "';";
         Statement stmtIDSelect = null;
         Integer userID = null;

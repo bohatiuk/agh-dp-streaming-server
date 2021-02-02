@@ -16,7 +16,6 @@
         <element id="directory" name="lib">
           <element id="library" level="project" name="Maven: io.github.techgnious:IVCompressor:2.0.0" />
           <element id="library" level="project" name="Maven: ws.schild:jave-core:3.0.1" />
-          <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:1.7.26" />
           <element id="library" level="project" name="Maven: ws.schild:jave-nativebin-win64:3.0.1" />
           <element id="library" level="project" name="Maven: ws.schild:jave-nativebin-linux64:3.0.1" />
           <element id="library" level="project" name="Maven: ws.schild:jave-nativebin-osx64:3.0.1" />
@@ -24,6 +23,8 @@
           <element id="library" level="project" name="Maven: org.postgresql:postgresql:42.2.18" />
           <element id="library" level="project" name="Maven: org.checkerframework:checker-qual:3.5.0" />
           <element id="library" level="project" name="Maven: com.google.code.gson:gson:2.8.6" />
+          <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:1.7.30" />
+          <element id="library" level="project" name="Maven: org.slf4j:slf4j-simple:1.7.30" />
         </element>
       </element>
       <element id="directory" name="META-INF">

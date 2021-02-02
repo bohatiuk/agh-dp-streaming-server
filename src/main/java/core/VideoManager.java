@@ -16,6 +16,7 @@ public class VideoManager {
     private static final VideoManager INSTANCE = new VideoManager();
     public static Config config;
     private DatabaseConnector dbConn;
+    private ScheduledExecutorService executor;
 
 
     private static VideoManager getInstance() {
@@ -54,7 +55,7 @@ public class VideoManager {
             }
         };
 
-        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+        executor = Executors.newScheduledThreadPool(1);
         executor.scheduleAtFixedRate(runnable, 0, Integer.parseInt(VideoManager.config.tokenTTL), TimeUnit.MINUTES);
     }
 

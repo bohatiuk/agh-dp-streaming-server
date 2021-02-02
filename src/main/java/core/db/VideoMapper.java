@@ -59,7 +59,7 @@ public class VideoMapper extends AbstractDataMapper {
 
     public void updateToken(String oldToken, String newToken) {
         try {
-            String updateQuery = "UPDATE " + VideoManager.config.dbVideoTable + " SET video_token = " + newToken + " WHERE video_token = " + oldToken + ";";
+            String updateQuery = "UPDATE " + VideoManager.config.dbVideoTable + " SET video_token = '" + newToken + "' WHERE video_token ='" + oldToken + "';";
             Statement stmtUpdate = conn.createStatement();
             stmtUpdate.executeUpdate(updateQuery);
             stmtUpdate.close();
